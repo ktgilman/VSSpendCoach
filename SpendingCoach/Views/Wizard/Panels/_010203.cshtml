@@ -1,0 +1,36 @@
+﻿@using SpendingCoach.Models
+@model WizardViewModel
+
+<h2>Pop Quiz...Revisited</h2>
+<p>Now that you understand the difference between positive and negative reasons, let's revisit your initial purpose for creating a budget:</p>
+<blockquote>
+    <p><strong>My Purpose for following a budget is:</strong></p>
+    <p>
+        @if (Model.Answers.SubsequentPurpose == null)
+        {
+            @Model.Answers.InitialPurpose
+        }
+        else
+        {
+            @Model.Answers.SubsequentPurpose
+        }
+
+    </p>
+</blockquote>
+<p>Ask yourself these questions:</p>
+<ul>
+    <li>Is your purpose positive or negative in nature?</li>
+    <li>If your purpose is negative, how could you turn it around to be positive?</li>
+    <li>If you can't think of a way to make your purpose positive, is there another reason that is positive for you to follow a budget?</li>
+</ul>
+<p>Once you have thought through these questions, type in your purpose again, this time, in a way that will help you to be successful.</p>
+<div class="form-group">
+    @Html.LabelFor(y => y.Answers.SubsequentPurpose)
+    @Html.TextAreaFor(y => y.Answers.SubsequentPurpose, new { @class = "form-control subsequentPurpose", @rows = "5" })
+</div>
+<div class="form-group">
+    <div class="btn-group">
+        <button class="btn btn-primary btn-lg goToFirstPrev">Go Back</button>
+        <button class="btn btn-primary btn-lg goToFirstNext">Next</button>
+    </div>
+</div>

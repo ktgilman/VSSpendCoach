@@ -1,0 +1,125 @@
+﻿@using SpendingCoach.Models
+@model WizardViewModel
+@{
+    ViewBag.Title = "Start";
+    Layout = "~/Views/Shared/_centralstart.cshtml";
+}
+
+@using (Html.BeginForm("Start", "Wizard", FormMethod.Post, new { @class = "form-horizontal", @role = "form", @id = "mainWizardForm" }))
+{
+    @Html.AntiForgeryToken();
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    
+    @Html.HiddenFor(y => y.WizardPosition, new { @class = "wizardPosition" })
+    @Html.HiddenFor(y => y.WizardPrevPosition, new { @class = "wizardPrevPosition" })
+    @Html.HiddenFor(y => y.WizardPageMap.WizardMapNextFirst, new { @class = "wizardFirstNext" })
+    @Html.HiddenFor(y => y.WizardPageMap.WizardMapNextSecond, new { @class = "wizardSecondNext" })
+    @Html.HiddenFor(y => y.WizardPageMap.WizardMapNextThird, new { @class = "wizardThirdNext" })
+    @Html.HiddenFor(y => y.WizardPageMap.WizardMapPrevFirst, new { @class = "wizardFirstPrev" })
+    @Html.HiddenFor(y => y.WizardPageMap.WizardMapPrevSecond, new { @class = "wizardSecondPrev" })
+    @Html.HiddenFor(y => y.WizardPageMap.WizardMapPrevThird, new { @class = "wizardThirdPrev" })
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <ul class="nav nav-pills">
+                @for (var x = 1; x < 9; x++)
+                {
+                    string PageNumberString = "0" + x.ToString();
+                    <li class="@(Model.WizardPosition.Substring(0, 2) == PageNumberString ? "active" : "") dropdown">
+                        @Html.Partial("Links/_"+PageNumberString)
+                    </li>
+                }
+            </ul>
+        </div>
+        
+
+        @foreach (var x in Model.PossiblePositions)
+        {
+            <div class="panel-body @(Model.WizardPosition==x?"activePanel":"")" id=@x>
+                @Html.Partial("Panels/_" + x, Model)
+            </div>
+        }
+    </div>
+}
+    
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $('[data-submenu]').submenupicker();
+
+        $('.panel-body').hide();
+        $('.activePanel').show();
+
+        //change form values before form is sent.
+
+        $('.goToFirstNext').click(function () {
+            setPosition($('.wizardPosition').val(), $('.wizardFirstNext').val());
+        });
+
+        $('.goToSecondNext').click(function () {
+            setPosition($('.wizardPosition').val(), $('.wizardSecondNext').val());
+        });
+
+        $('.goToThirdNext').click(function () {
+            setPosition($('.wizardPosition').val(), $('.wizardThirdNext').val());
+        });
+
+        $('.goToFirstPrev').click(function () {
+            setPosition($('.wizardPosition').val(), $('.wizardFirstPrev').val());
+        });
+
+        $('.goToSecondPrev').click(function () {
+            setPosition($('.wizardPosition').val(), $('.wizardSecondPrev').val());
+        });
+
+        $('.goToThirdPrev').click(function () {
+            setPosition($('.wizardPosition').val(), $('.wizardThirdPrev').val());
+        });
+
+        $('.navLink').click(function () {
+            setPosition($('.wizardPosition').val(), $(this).attr('data-page'));
+            $('#mainWizardForm').submit();
+        })
+
+        $('.subSectionNext').click(function () {
+            $(this).parents('.subSection').hide().next().show();
+        });
+
+        $('.subSectionPrev').click(function () {
+            $(this).parents('.subSection').hide().prev().show();
+        });
+
+        //Sync text sections that should match input sections.
+        $('.syncInput').keyup(function () {
+            var spanToSync = $(this).attr("id");
+            var textToSync = $(this).val();
+            $('.' + spanToSync).text(textToSync);
+        });
+
+        $('.syncInputToInput').keyup(function () {
+            var spanToSync = $(this).attr("id");
+            var textToSync = $(this).val();
+            var itemTextToSync = $(this).attr("data-item");
+            $('.' + spanToSync + 'Input').val(itemTextToSync + ' - ' + textToSync);
+        });
+
+        //end general change classes
+
+        function setPosition(currentPosition, newPosition) {
+            $('.wizardPrevPosition').val(currentPosition);
+            $('.wizardPosition').val(newPosition);
+        }
+
+
+    </script>
+    
+
+}
+
+
+
+
+

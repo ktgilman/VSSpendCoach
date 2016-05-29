@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BudgetItems">
+          <Key>
+            <PropertyRef Name="BudgetItemId" />
+          </Key>
+          <Property Name="BudgetItemId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="BudgetId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="BudgetItemName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="BudgetItemAmount" Type="money" Nullable="false" />
+          <Property Name="BudgetItemCategory" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="BudgetItemFrequency" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="BudgetItemType" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdateDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Budgets">
+          <Key>
+            <PropertyRef Name="BudgetId" />
+          </Key>
+          <Property Name="BudgetId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CustomerId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Position" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="L_Categories">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CategoryName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryOrder" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="L_MostImportantBudgetItemQuizItems">
+          <Key>
+            <PropertyRef Name="QuizItemId" />
+          </Key>
+          <Property Name="QuizItemId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="QuizItemName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="L_SuggestedBudgetItems">
+          <Key>
+            <PropertyRef Name="SuggestedBudgetItemId" />
+          </Key>
+          <Property Name="SuggestedBudgetItemId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="BudgetItemName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="BudgetItemCategory" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="L_SuggestedFrequencies">
+          <Key>
+            <PropertyRef Name="FrequencyId" />
+          </Key>
+          <Property Name="FrequencyId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="FrequencyName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Order" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="L_WizardMappings">
+          <Key>
+            <PropertyRef Name="WizardMappingId" />
+          </Key>
+          <Property Name="WizardMappingId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="WizardPage" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="WizardFirstPrevPage" Type="varchar" MaxLength="10" />
+          <Property Name="WizardSecondPrevPage" Type="varchar" MaxLength="10" />
+          <Property Name="WizardThirdPrevPage" Type="varchar" MaxLength="10" />
+          <Property Name="WizardFirstNextPage" Type="varchar" MaxLength="10" />
+          <Property Name="WizardSecondNextPage" Type="varchar" MaxLength="10" />
+          <Property Name="WizardThirdNextPage" Type="varchar" MaxLength="10" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TransactionItems">
+          <Key>
+            <PropertyRef Name="TransactionItemId" />
+          </Key>
+          <Property Name="TransactionItemId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CustomerId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TransactionItemName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="TransactionItemAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="TransactionItemDate" Type="datetime" Nullable="false" />
+          <Property Name="TransactionItemBudgetItem" Type="uniqueidentifier" />
+          <Property Name="PrimaryTransactionItem" Type="uniqueidentifier" />
+          <Property Name="SecondaryTranscationItem" Type="uniqueidentifier" />
+          <Property Name="TransactionItemType" Type="int" />
+          <Property Name="TransactionItemMemo" Type="varchar" MaxLength="50" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdateDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WizardEmployers">
+          <Key>
+            <PropertyRef Name="EmployerId" />
+          </Key>
+          <Property Name="EmployerId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="WizardId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="EmployerName" Type="varchar" MaxLength="25" />
+          <Property Name="EmployerType" Type="varchar" MaxLength="10" />
+          <Property Name="EmployerUser" Type="varchar" MaxLength="10" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WizardInstances">
+          <Key>
+            <PropertyRef Name="WizardId" />
+          </Key>
+          <Property Name="WizardId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="BudgetId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PrevPosition" Type="varchar" MaxLength="10" />
+          <Property Name="Position" Type="varchar" MaxLength="10" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+          <Property Name="InitialPurpose" Type="varchar" MaxLength="100" />
+          <Property Name="SubsequentPurpose" Type="varchar" MaxLength="100" />
+          <Property Name="MostImportantBudgetItem" Type="uniqueidentifier" />
+          <Property Name="PrimaryName" Type="varchar" MaxLength="50" />
+          <Property Name="SpouseName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="BudgetItems" EntityType="Self.BudgetItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Budgets" EntityType="Self.Budgets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="L_Categories" EntityType="Self.L_Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="L_MostImportantBudgetItemQuizItems" EntityType="Self.L_MostImportantBudgetItemQuizItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="L_SuggestedBudgetItems" EntityType="Self.L_SuggestedBudgetItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="L_SuggestedFrequencies" EntityType="Self.L_SuggestedFrequencies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="L_WizardMappings" EntityType="Self.L_WizardMappings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransactionItems" EntityType="Self.TransactionItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WizardEmployers" EntityType="Self.WizardEmployers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WizardInstances" EntityType="Self.WizardInstances" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BudgetItem">
+          <Key>
+            <PropertyRef Name="BudgetItemId" />
+          </Key>
+          <Property Name="BudgetItemId" Type="Guid" Nullable="false" />
+          <Property Name="BudgetId" Type="Guid" Nullable="false" />
+          <Property Name="BudgetItemName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BudgetItemAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BudgetItemCategory" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BudgetItemFrequency" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BudgetItemType" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Budget">
+          <Key>
+            <PropertyRef Name="BudgetId" />
+          </Key>
+          <Property Name="BudgetId" Type="Guid" Nullable="false" />
+          <Property Name="CustomerId" Type="Guid" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Position" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="Central" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BudgetItems" EntityType="Self.BudgetItem" />
+          <EntitySet Name="Budgets" EntityType="Self.Budget" />
+          <EntitySet Name="L_SuggestedBudgetItem" EntityType="Model.L_SuggestedBudgetItem" />
+          <EntitySet Name="L_Category" EntityType="Model.L_Category" />
+          <EntitySet Name="L_SuggestedFrequency" EntityType="Model.L_SuggestedFrequency" />
+          <EntitySet Name="TransactionItems" EntityType="Model.TransactionItem" />
+          <EntitySet Name="WizardInstances" EntityType="Model.WizardInstance" />
+          <EntitySet Name="L_WizardMapping" EntityType="Model.L_WizardMapping" />
+          <EntitySet Name="L_MostImportantBudgetItemQuizItem" EntityType="Model.L_MostImportantBudgetItemQuizItem" />
+          <EntitySet Name="WizardEmployers" EntityType="Model.WizardEmployer" />
+        </EntityContainer>
+        <EntityType Name="L_SuggestedBudgetItem">
+          <Key>
+            <PropertyRef Name="SuggestedBudgetItemId" />
+          </Key>
+          <Property Name="SuggestedBudgetItemId" Type="Guid" Nullable="false" />
+          <Property Name="BudgetItemName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BudgetItemCategory" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="L_Category">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="Guid" Nullable="false" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryOrder" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="L_SuggestedFrequency">
+          <Key>
+            <PropertyRef Name="FrequencyId" />
+          </Key>
+          <Property Name="FrequencyId" Type="Guid" Nullable="false" />
+          <Property Name="FrequencyName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Order" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TransactionItem">
+          <Key>
+            <PropertyRef Name="TransactionItemId" />
+          </Key>
+          <Property Name="TransactionItemId" Type="Guid" Nullable="false" />
+          <Property Name="CustomerId" Type="Guid" Nullable="false" />
+          <Property Name="TransactionItemName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TransactionItemAmount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="TransactionItemDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TransactionItemBudgetItem" Type="Guid" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdateDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PrimaryTransactionItem" Type="Guid" />
+          <Property Name="SecondaryTranscationItem" Type="Guid" />
+          <Property Name="TransactionItemType" Type="Int32" />
+          <Property Name="TransactionItemMemo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="WizardInstance">
+          <Key>
+            <PropertyRef Name="WizardId" />
+          </Key>
+          <Property Name="WizardId" Type="Guid" Nullable="false" />
+          <Property Name="BudgetId" Type="Guid" Nullable="false" />
+          <Property Name="Position" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PrevPosition" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="InitialPurpose" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SubsequentPurpose" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MostImportantBudgetItem" Type="Guid" />
+          <Property Name="PrimaryName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SpouseName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="L_WizardMapping">
+          <Key>
+            <PropertyRef Name="WizardMappingId" />
+          </Key>
+          <Property Name="WizardMappingId" Type="Guid" Nullable="false" />
+          <Property Name="WizardPage" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WizardFirstPrevPage" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WizardSecondPrevPage" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WizardThirdPrevPage" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WizardFirstNextPage" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WizardSecondNextPage" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="WizardThirdNextPage" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="L_MostImportantBudgetItemQuizItem">
+          <Key>
+            <PropertyRef Name="QuizItemId" />
+          </Key>
+          <Property Name="QuizItemId" Type="Guid" Nullable="false" />
+          <Property Name="QuizItemName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="WizardEmployer">
+          <Key>
+            <PropertyRef Name="EmployerId" />
+          </Key>
+          <Property Name="EmployerId" Type="Guid" Nullable="false" />
+          <Property Name="WizardId" Type="Guid" Nullable="false" />
+          <Property Name="EmployerName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="EmployerType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="EmployerUser" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Central">
+          <EntitySetMapping Name="BudgetItems">
+            <EntityTypeMapping TypeName="Model.BudgetItem">
+              <MappingFragment StoreEntitySet="BudgetItems">
+                <ScalarProperty Name="BudgetItemType" ColumnName="BudgetItemType" />
+                <ScalarProperty Name="BudgetItemFrequency" ColumnName="BudgetItemFrequency" />
+                <ScalarProperty Name="BudgetItemCategory" ColumnName="BudgetItemCategory" />
+                <ScalarProperty Name="BudgetItemId" ColumnName="BudgetItemId" />
+                <ScalarProperty Name="BudgetId" ColumnName="BudgetId" />
+                <ScalarProperty Name="BudgetItemName" ColumnName="BudgetItemName" />
+                <ScalarProperty Name="BudgetItemAmount" ColumnName="BudgetItemAmount" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Budgets">
+            <EntityTypeMapping TypeName="Model.Budget">
+              <MappingFragment StoreEntitySet="Budgets">
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="BudgetId" ColumnName="BudgetId" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="L_SuggestedBudgetItem">
+            <EntityTypeMapping TypeName="Model.L_SuggestedBudgetItem">
+              <MappingFragment StoreEntitySet="L_SuggestedBudgetItems">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="BudgetItemCategory" ColumnName="BudgetItemCategory" />
+                <ScalarProperty Name="BudgetItemName" ColumnName="BudgetItemName" />
+                <ScalarProperty Name="SuggestedBudgetItemId" ColumnName="SuggestedBudgetItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="L_Category">
+            <EntityTypeMapping TypeName="Model.L_Category">
+              <MappingFragment StoreEntitySet="L_Categories">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CategoryOrder" ColumnName="CategoryOrder" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="L_SuggestedFrequency">
+            <EntityTypeMapping TypeName="Model.L_SuggestedFrequency">
+              <MappingFragment StoreEntitySet="L_SuggestedFrequencies">
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="FrequencyName" ColumnName="FrequencyName" />
+                <ScalarProperty Name="FrequencyId" ColumnName="FrequencyId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TransactionItems">
+            <EntityTypeMapping TypeName="Model.TransactionItem">
+              <MappingFragment StoreEntitySet="TransactionItems">
+                <ScalarProperty Name="TransactionItemMemo" ColumnName="TransactionItemMemo" />
+                <ScalarProperty Name="TransactionItemType" ColumnName="TransactionItemType" />
+                <ScalarProperty Name="SecondaryTranscationItem" ColumnName="SecondaryTranscationItem" />
+                <ScalarProperty Name="PrimaryTransactionItem" ColumnName="PrimaryTransactionItem" />
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="TransactionItemBudgetItem" ColumnName="TransactionItemBudgetItem" />
+                <ScalarProperty Name="TransactionItemDate" ColumnName="TransactionItemDate" />
+                <ScalarProperty Name="TransactionItemAmount" ColumnName="TransactionItemAmount" />
+                <ScalarProperty Name="TransactionItemName" ColumnName="TransactionItemName" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="TransactionItemId" ColumnName="TransactionItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WizardInstances">
+            <EntityTypeMapping TypeName="Model.WizardInstance">
+              <MappingFragment StoreEntitySet="WizardInstances">
+                <ScalarProperty Name="SpouseName" ColumnName="SpouseName" />
+                <ScalarProperty Name="PrimaryName" ColumnName="PrimaryName" />
+                <ScalarProperty Name="MostImportantBudgetItem" ColumnName="MostImportantBudgetItem" />
+                <ScalarProperty Name="SubsequentPurpose" ColumnName="SubsequentPurpose" />
+                <ScalarProperty Name="InitialPurpose" ColumnName="InitialPurpose" />
+                <ScalarProperty Name="PrevPosition" ColumnName="PrevPosition" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="BudgetId" ColumnName="BudgetId" />
+                <ScalarProperty Name="WizardId" ColumnName="WizardId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="L_WizardMapping">
+            <EntityTypeMapping TypeName="Model.L_WizardMapping">
+              <MappingFragment StoreEntitySet="L_WizardMappings">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="WizardThirdNextPage" ColumnName="WizardThirdNextPage" />
+                <ScalarProperty Name="WizardSecondNextPage" ColumnName="WizardSecondNextPage" />
+                <ScalarProperty Name="WizardFirstNextPage" ColumnName="WizardFirstNextPage" />
+                <ScalarProperty Name="WizardThirdPrevPage" ColumnName="WizardThirdPrevPage" />
+                <ScalarProperty Name="WizardSecondPrevPage" ColumnName="WizardSecondPrevPage" />
+                <ScalarProperty Name="WizardFirstPrevPage" ColumnName="WizardFirstPrevPage" />
+                <ScalarProperty Name="WizardPage" ColumnName="WizardPage" />
+                <ScalarProperty Name="WizardMappingId" ColumnName="WizardMappingId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="L_MostImportantBudgetItemQuizItem">
+            <EntityTypeMapping TypeName="Model.L_MostImportantBudgetItemQuizItem">
+              <MappingFragment StoreEntitySet="L_MostImportantBudgetItemQuizItems">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="QuizItemName" ColumnName="QuizItemName" />
+                <ScalarProperty Name="QuizItemId" ColumnName="QuizItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WizardEmployers">
+            <EntityTypeMapping TypeName="Model.WizardEmployer">
+              <MappingFragment StoreEntitySet="WizardEmployers">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="EmployerUser" ColumnName="EmployerUser" />
+                <ScalarProperty Name="EmployerType" ColumnName="EmployerType" />
+                <ScalarProperty Name="EmployerName" ColumnName="EmployerName" />
+                <ScalarProperty Name="WizardId" ColumnName="WizardId" />
+                <ScalarProperty Name="EmployerId" ColumnName="EmployerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

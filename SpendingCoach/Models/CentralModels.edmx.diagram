@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ff501342c8ab47d8a139d1737834483c" Name="Diagram1">
+        <EntityTypeShape EntityType="Model.BudgetItem" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Budget" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.L_SuggestedBudgetItem" Width="2.25" PointX="4.625" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.L_Category" Width="1.5" PointX="7.25" PointY="0.75" />
+        <EntityTypeShape EntityType="Model.L_SuggestedFrequency" Width="2.25" PointX="9" PointY="0.75" />
+        <EntityTypeShape EntityType="Model.TransactionItem" Width="2.25" PointX="2.75" PointY="2.875" />
+        <EntityTypeShape EntityType="Model.WizardInstance" Width="1.5" PointX="5.125" PointY="2.875" />
+        <EntityTypeShape EntityType="Model.L_WizardMapping" Width="1.5" PointX="6.875" PointY="2.875" />
+        <EntityTypeShape EntityType="Model.L_MostImportantBudgetItemQuizItem" Width="3" PointX="8.75" PointY="2.875" />
+        <EntityTypeShape EntityType="Model.WizardEmployer" Width="1.5" PointX="8.625" PointY="5" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,80 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+
+
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+@media (max-width:991px){
+    .mainHeaderLabels{
+        display:none;
+    }
+
+    .endSaveButton{
+        display:none;
+    }
+}
+
+@media (min-width:992px){
+    .mainLabel{
+        display: none;
+    }
+
+    .inlineSaveButton{
+        display: none;
+    }
+}
+
+.transPage{
+    border-top-right-radius: 25%;
+    border-bottom-left-radius: 25%;
+    border-color: black;
+    padding-top: 1%;
+
+}
+
+.transPage:nth-child(2n){
+    background: lightblue;
+}
+
+#fullSplitTransaction{
+    display:none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(96, 91, 91, .5);
+}
+
+#splitTransaction{
+    position: fixed;
+    width: 80%;
+    left: 10%;
+    top: 25%;
+}
+
+.newSplitTransaction{
+    display: none;
+}

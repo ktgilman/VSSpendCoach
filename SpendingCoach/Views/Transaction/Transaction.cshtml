@@ -1,0 +1,1079 @@
+﻿@using SpendingCoach.Models
+@model TransactionViewModel
+
+
+@{
+    ViewBag.Title = "Transactions";
+    Layout = "~/Views/Shared/_centralstart.cshtml";
+}
+
+@Html.ValidationMessageFor(x => x.UploadedFile)
+
+<h2>Transaction</h2>
+
+@if (Model.SuccessMessage != "" && Model.SuccessMessage != null)
+{
+    <p class="successMessage alert alert-success alert-dismissable">@Model.SuccessMessage</p>
+}
+else
+{
+    <p class="successMessage" style="display:none"></p>
+}
+@if (Model.ErrorMessage != "" && Model.ErrorMessage != null)
+{
+    <p class="errorMessage alert alert-danger alert-dismissable">@Model.ErrorMessage</p>
+}
+else
+{
+    <p class="errorMessage" style="display:none"></p>
+}
+
+@using (Html.BeginForm("Transaction", "Transaction", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">Transaction List</h1>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="input-group col-md-12">
+                            <span class="input-group-addon">
+                                @Html.CheckBoxFor(y => y.ViewTransactionFilter.NoBeginning, new { @class = "noBeginning" })
+                            </span>
+                            @Html.LabelFor(y => y.ViewTransactionFilter.NoBeginning, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group col-md-12">
+                            @if (Model.ViewTransactionFilter.NoBeginning == true)
+                            {
+                                @Html.TextBoxFor(y => y.ViewTransactionFilter.FilterBeginningDate, "{0:d MMM yyyy}", new { @class = "form-control datePicker beginningFilterSelect", @disabled=true })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(y => y.ViewTransactionFilter.FilterBeginningDate, "{0:d MMM yyyy}", new { @class = "form-control datePicker beginningFilterSelect"})
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group col-md-3">
+                    <div class="row">
+                        <div class="input-group col-md-12">
+                            <span class="input-group-addon">
+                                @Html.CheckBoxFor(y => y.ViewTransactionFilter.NoEnding, new { @class = "noEnding" })
+                            </span>
+                            @Html.LabelFor(y => y.ViewTransactionFilter.NoEnding, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group col-md-12">
+                            @if (Model.ViewTransactionFilter.NoEnding == true)
+                            {
+                                @Html.TextBoxFor(y => y.ViewTransactionFilter.FilterEndingDate, "{0:d MMM yyyy}", new { @class = "form-control datePicker endingFilterSelect", @disabled=true})
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(y => y.ViewTransactionFilter.FilterEndingDate, "{0:d MMM yyyy}", new { @class = "form-control datePicker endingFilterSelect" })
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group col-md-3">
+                    <div class="row">
+                        <div class="input-group col-md-12">
+                            <span class="input-group-addon">
+                                @Html.CheckBoxFor(y => y.ViewTransactionFilter.NoCriteria, new { @class = "noCriteria" })
+                            </span>
+                            @Html.LabelFor(y => y.ViewTransactionFilter.NoCriteria, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group col-md-12">
+                            @if (Model.ViewTransactionFilter.NoCriteria == true)
+                            {
+                                @Html.DropDownListFor(y => y.ViewTransactionFilter.FilterCategory, Model.FilterCriteriaChoices, new { @class = "form-control categoryFilterSelect", @disabled = true})
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(y => y.ViewTransactionFilter.FilterCategory, Model.FilterCriteriaChoices, new { @class = "form-control categoryFilterSelect" })
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+
+                    @if (Model.ViewTransactionFilter.FilterCategory == 1 || Model.ViewTransactionFilter.FilterCategory == 0)
+                    {
+                        <div class="row">
+                            <div class="input-group col-md-12">
+                                <span class="input-group-addon">
+                                    @Html.LabelFor(y => y.ViewTransactionFilter.FilterCategoryCriteria, new { @class = "filterCategoryLabel" })
+                                    @Html.LabelFor(y => y.ViewTransactionFilter.FilterTextCriteria, new { @class = "filterTextLabel", @style = "display:none" })
+                                </span>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-md-12">
+                                @if (Model.ViewTransactionFilter.NoCriteria == true)
+                                {
+                                    @Html.DropDownListFor(y => y.ViewTransactionFilter.FilterCategoryCriteria, new SelectList(Model.BudgetItemList, "Value", "Text", "Group.Name", Model.ViewTransactionFilter.FilterCategoryCriteria), new { @class = "form-control optionOneCriteria criteriaSelect", @disabled = true })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(y => y.ViewTransactionFilter.FilterCategoryCriteria, new SelectList(Model.BudgetItemList, "Value", "Text", "Group.Name", Model.ViewTransactionFilter.FilterCategoryCriteria), new { @class = "form-control optionOneCriteria criteriaSelect" })
+
+                                }
+                                @Html.TextBoxFor(y => y.ViewTransactionFilter.FilterTextCriteria, new { @class = "form-control optionOtherCriteria criteriaSelect", @disabled = true, @style = "display:none" })
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="input-group col-md-12">
+                                <span class="input-group-addon">
+                                    @Html.LabelFor(y => y.ViewTransactionFilter.FilterCategoryCriteria, new { @class = "filterCategoryLabel", @style = "display:none" })
+                                    @Html.LabelFor(y => y.ViewTransactionFilter.FilterTextCriteria, new { @class = "filterTextLabel" })
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group col-md-12">
+                                @Html.DropDownListFor(y => y.ViewTransactionFilter.FilterCategoryCriteria, new SelectList(Model.BudgetItemList, "Value", "Text", "Group.Name", Model.ViewTransactionFilter.FilterCategoryCriteria), new { @class = "form-control optionOneCriteria criteriaSelect", @disabled = true, @style = "display:none" })
+                                @if (Model.ViewTransactionFilter.NoCriteria == true)
+                                {
+                                    @Html.TextBoxFor(y => y.ViewTransactionFilter.FilterTextCriteria, new { @class = "form-control optionOtherCriteria criteriaSelect" , @disabled = true})
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(y => y.ViewTransactionFilter.FilterTextCriteria, new { @class = "form-control optionOtherCriteria criteriaSelect" })
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-group col-md-12">
+                    <input type="submit" class="btn btn-default" value="Filter" />
+                </div>
+            </div>
+        </div>
+        <div class="panel-body transactionListBody">
+            @{int PageNumber = 1;}
+            @if (Model.Transactions.Count > 0)
+            {
+                <div>
+                    <div class="row mainHeaderLabels">
+                        <div class="col-md-2"><h4>Transaction Date</h4></div>
+                        <div class="col-md-2"><h4>Transaction Name</h4></div>
+                        <div class="col-md-2"><h4>Transaction Amount</h4></div>
+                        <div class="col-md-2"><h4>Budget Item</h4></div>
+                        <div class="col-md-2"><h4>Transaction Memo</h4></div>
+                    </div>
+                    
+                    @for (var x = 0; x < Model.Transactions.Count; x++)
+                    {
+                        if (x % 10 == 0)
+                        {
+                            PageNumber = (x / 10) + 1;
+                        }
+                        <div class="transPage transPage-@(PageNumber)">
+                            <div class="row transactionGroup">
+                                @Html.HiddenFor(y => y.Transactions[x].TransactionItemId, new { @class = "mainTransId" })
+
+
+                                @if (Model.Transactions[x].TransactionType == 1 || Model.Transactions[x].TransactionType == 3)
+                                {
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].TransactionDate)</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionDate, "{0:d MMM yyyy}", new { @class = "mainTransDate form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].TransactionName)</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionName, new { @class = "mainTransName form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">@Html.LabelFor(y => y.Transactions[x].TransactionAmount, new { @class = "mainLabel" }) $</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionAmount, new { @class = "mainTransAmount form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                }
+                                else if (Model.Transactions[x].TransactionType == 2)
+                                {
+                                    <div class="col-md-2 col-sm-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].TransactionDate)</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionDate, "{0:d MMM yyyy}", new { @class = "datePicker mainTransDate form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].TransactionName)</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionName, new { @class = "mainTransName form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">@Html.LabelFor(y => y.Transactions[x].TransactionAmount, new { @class = "mainLabel" }) $</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionAmount, new { @class = "mainTransAmount form-control" })
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (Model.Transactions[x].TransactionType == 1 || Model.Transactions[x].TransactionType == 2)
+                                {
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].BudgetItemId)</span>
+                                            @Html.DropDownListFor(y => y.Transactions[x].BudgetItemId, new SelectList(Model.BudgetItemList, "Value", "Text", "Group.Name", Model.Transactions[x].BudgetItemId), new { @class = "mainTransItem form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].TransactionMemo)</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionMemo, new { @class = "mainTransMemo form-control" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-12">
+                                        @if (Model.Transactions[x].TransactionType == 1)
+                                        {
+
+                                            <a class="split btn btn-default" href="javascript:void(0)">
+                                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                                <span class="sr-only">Split</span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="inactiveSplit btn btn-default" disabled="true">
+                                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                                <span class="sr-only">Split</span>
+                                            </a>
+                                        }
+                                        <a class="delete btn btn-default" href="Javascript:void(0)">
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                            <span class="sr-only">Delete Transaction Item</span>
+                                        </a>
+                                    </div>
+
+                                }
+                                else if (Model.Transactions[x].TransactionType == 3)
+                                {
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].BudgetItemId)</span>
+                                            @Html.DropDownListFor(y => y.Transactions[x].BudgetItemId, new SelectList(Model.BudgetItemList, "Value", "Text", "Group.Name", Model.Transactions[x].BudgetItemId), new { @class = "mainTransItem form-control", @disabled = true })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-6 col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon mainLabel">@Html.LabelFor(y => y.Transactions[x].TransactionMemo)</span>
+                                            @Html.TextBoxFor(y => y.Transactions[x].TransactionMemo, new { @class = "mainTransMemo form-control", @disabled = true })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-12">
+                                        <a href="javascript:void(0)" class="split editSplit btn btn-default">
+                                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                            <span class="sr-only">Edit Split Transaction</span>
+                                        </a>
+
+                                        <a class="delete btn btn-default" href="Javascript:void(0)">
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                            <span class="sr-only">Delete Transaction Item</span>
+                                        </a>
+                                    </div>
+                                    <div class="splitsDivForTrans" id="@Model.Transactions[x].TransactionItemId">
+                                    @for (var y = 0; y < Model.SplitTransactions.Count; y++)
+                                    {
+                                        if (Model.SplitTransactions[y].PrimaryTransactionId == Model.Transactions[x].TransactionItemId)
+                                        {
+                                            <div class="row splitsOnMain" id="@Model.SplitTransactions[y].TransactionItemId">
+                                                <div class="col-md-2 col-sm-6 col-xs-12">
+                                                    <span class="splitTransactionDate">@Model.SplitTransactions[y].TransactionDate.ToShortDateString()</span>
+                                                </div>
+                                                <div class="col-md-2 col-sm-6 col-xs-12">
+                                                    <span class="splitTransactionName">@Model.SplitTransactions[y].TransactionName</span>
+                                                </div>
+                                                <div class="col-md-2 col-sm-6 col-xs-12">
+                                                    <span class="splitTransactionAmount">@Model.SplitTransactions[y].TransactionAmount</span>
+                                                </div>
+                                                <div class="col-md-2 col-sm-6 col-xs-12">
+                                                    <span class="splitTransactionBudgetId">@Model.SplitTransactions[y].BudgetItemDisplayName</span>
+                                                </div>
+                                                <div class="col-md-2 col-sm-6 col-xs-12">
+                                                    <span class="splitTransactionMemo">@Model.SplitTransactions[y].TransactionMemo</span>
+                                                </div>
+                                            </div>
+                                        }
+
+                                    }
+                                    </div>
+
+
+                                }
+                                @Html.HiddenFor(y => y.Transactions[x].TransactionType, new{@class="mainTransType"})
+                                <div class="row">
+                                    <div class="col-sm-12 input-group">
+                                        <input type="submit" class="btn btn-default inlineSaveButton" value="Save Transaction Edits" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 input-group">
+                        <input type="submit" class="btn btn-default endSaveButton" value="Save Transaction Edits" />
+                    </div>
+                </div>
+                
+            }
+            <nav class="transactionNav">
+                <ul class="pagination">
+                    <li>
+                        <a href="Javascript:void(0)" class="selectPage selectPage-previousPage" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    @for (var z = 0; z < PageNumber; z++)
+                    {
+                        <li><a href="Javascript:void(0)" class="selectPage selectPage-@(z+1) @(z==PageNumber-1 ? "selectPage-last" : "")">@(z+1)</a></li>
+                    }
+                    
+                    <li>
+                        <a href="Javascript:void(0)" class="selectPage selectPage-nextPage" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+}
+
+
+
+@using (Html.BeginForm("Transaction", "Transaction", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Add A New Transaction</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.LabelFor(y => y.TransactionToAdd.TransactionDate)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.TextBoxFor(y => y.TransactionToAdd.TransactionDate, new { @class = "datePicker form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.LabelFor(y => y.TransactionToAdd.TransactionName)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.TextBoxFor(y => y.TransactionToAdd.TransactionName, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.LabelFor(y => y.TransactionToAdd.TransactionAmount)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            <span class="input-group-addon">$</span>
+                            @Html.TextBoxFor(y => y.TransactionToAdd.TransactionAmount, new { @class = "transAmountToAdd form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.LabelFor(y => y.TransactionToAdd.BudgetItemId)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.DropDownListFor(y => y.TransactionToAdd.BudgetItemId, new SelectList(Model.BudgetItemList, "Value", "Text", "Group.Name", Guid.Empty), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.LabelFor(y => y.TransactionToAdd.TransactionMemo)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 input-group">
+                            @Html.TextBoxFor(y => y.TransactionToAdd.TransactionMemo, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 input-group">
+                    <input type="submit" class="btn btn-default" value="Add Transaction" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-------------------------------------------
+    
+ Split Transaction Pop-Out
+
+-------------------------------------------->
+
+<div id="fullSplitTransaction">
+    <div class="panel panel-default" id="splitTransaction">
+        <div class="panel-heading">
+            <h1 class="panel-title">Split Transaction</h1>
+        </div>
+        <div class="panel-body">
+            <div>
+                <div class="row">
+                    <div class="col-md-2 col-sm-6 col-xs-12">Transaction Date</div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">Transaction Name</div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">Transaction Amount</div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">Budget Item</div>
+                    <div class="col-md-2 col-sm-6 col-xs-12">Transaction Memo</div>
+                </div>
+                <div class="row">
+                    <div class="splitSuccess alert alert-success alert-dismissable" style="display:none"></div>
+                    <div class="splitError alert alert-danger alert-dismissable" style="display:none"></div>
+                </div>
+            </div>
+            <div>
+                @using (Html.BeginForm("Transaction", "Transaction", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <div class="existingSplitTransactionDivs">
+                    @for (var x = 0; x < Model.SplitTransactions.Count; x++)
+                    {
+                        <div class="existingSplitTransaction row" style="display:none">
+                            @Html.HiddenFor(y => y.SplitTransactions[x].PrimaryTransactionId, new { @class = "transId" })
+                            @Html.HiddenFor(y => y.SplitTransactions[x].TransactionItemId, new { @class = "transactionId" })
+
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(y => y.SplitTransactions[x].TransactionDate, "{0:d MMM yyyy}", new { @class = "form-control transactionDate", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(y => y.SplitTransactions[x].TransactionName, new { @class = "form-control transactionName", @readonly = true })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    @Html.TextBoxFor(y => y.SplitTransactions[x].TransactionAmount, new { @class = "form-control transactionAmount" })
+                                    <input type="hidden" value="@Model.SplitTransactions[x].TransactionAmount" class="originalTransactionAmount" />
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.DropDownListFor(y => y.SplitTransactions[x].BudgetItemId, new SelectList(Model.BudgetItemList, "Value", "Text", "Group.Name", Model.SplitTransactions[x].BudgetItemId)
+                                , new { @class = "form-control transactionCategory" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(y => y.SplitTransactions[x].TransactionMemo, new { @class = "form-control transactionMemo" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12"><a href="javascript:void(0)" class="btn btn-default deleteSplitButton">Delete Split</a></div>
+                            @Html.HiddenFor(y => y.SplitTransactions[x].TransactionType, new { @class = "transactionType" })
+                        </div>
+                    }
+                    </div>
+                    <div class="newSplitTransactionDivs">
+                    @for (var x = 0; x < 5; x++)
+                    {
+                        <div class="newSplitTransaction row" id="split@(x)">
+                            @Html.HiddenFor(y => y.SplitsToAdd[x].PrimaryTransactionId, new { @class = "primaryTransactionId" })
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(y => y.SplitsToAdd[x].TransactionDate, "{0:d MMM yyyy}", new { @class = "form-control transactionDate", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(y => y.SplitsToAdd[x].TransactionName, new { @class = "form-control transactionName", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    <span class="input-group-addon">$</span>
+                                    @Html.TextBoxFor(y => y.SplitsToAdd[x].TransactionAmount, new { @class = "form-control transactionAmount" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.DropDownListFor(y => y.SplitsToAdd[x].BudgetItemId, new SelectList(Model.BudgetItemList, "Value", "Text"), new { @class = "form-control transactionCategory" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(y => y.SplitsToAdd[x].TransactionMemo, new { @class = "form-control transactionMemo" })
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6 col-xs-12"><a href="javascript:void(0)" class="btn btn-default deleteSplitButton">Delete Split</a></div>
+                        </div>
+                    }
+                    </div>
+                    <div class="row">
+                        <div class="text-right col-md-2 col-md-offset-2 col-sm-6 col-xs-12">Total:</div>
+                        <div class="text-left col-md-2 col-sm-6 col-xs-12" id="totalFromSplits">0.00</div>
+                        <div class="col-md-12"><a href="javascript:void(0)" class="btn btn-default addNewSplitButton">Add Split</a></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <a href="javascript:void(0)" class="btn btn-default" id="saveSplit">Save</a>
+                        </div>
+                        <div class="col-md-2 col-sm-6 col-xs-12">
+                            <a href="javascript:void(0)" class="btn btn-default" id="closeSplit">Close</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        /**********************************
+        Set up Pagination with Transactions
+        **********************************/
+
+        $('.transPage').hide();
+        $('.transPage-1').show();
+        $('.selectPage-1').parent().addClass("active");
+        $('.selectPage-previousPage').parent().addClass("disabled");
+        if ($('.selectPage-last').text() == 1) {
+            $('.selectPage-nextPage').parent().addClass("disabled");
+        }
+
+        $('.selectPage').click(function () {
+            var selectPage = 0;
+            var currentPage = parseInt($('.active .selectPage').first().text());
+            var lastPage = parseInt($('.selectPage-last').first().text());
+            if ($(this).hasClass("selectPage-previousPage")) {
+                var selectPage = currentPage - 1;
+                alert(selectPage);
+            } else if ($(this).hasClass("selectPage-nextPage")) {
+                var selectPage = currentPage + 1;
+                alert(selectPage);
+            } else {
+                var selectPage = $(this).text();
+            }
+            hidePageShowPage(currentPage, selectPage, lastPage);
+        });
+
+        function hidePageShowPage(hidePageNumber, showPageNumber, lastPageNumber) {
+            $('.transPage-' + hidePageNumber).hide();
+            $('.transPage-' + showPageNumber).show();
+            $('.selectPage-' + hidePageNumber).parent().removeClass("active");
+            $('.selectPage-' + showPageNumber).parent().addClass("active");
+            if (hidePageNumber == 1) {
+                $('.selectPage-previousPage').parent().removeClass("disabled");
+            }
+            if (showPageNumber == 1) {
+                $('.selectPage-previousPage').parent().addClass("disabled");
+            }
+            if (hidePageNumber == lastPageNumber) {
+                $('.selectPage-nextPage').parent().removeClass("disabled");
+            }
+            if (showPageNumber == lastPageNumber) {
+                $('.selectPage-nextPage').parent().addClass("disabled");
+            }
+        }
+
+        //Copy Nav from bottom and place at top of Transaction List
+        $('.transactionNav').clone(true, true).prependTo($('.transactionListBody').children().first());
+
+
+        /*********************************************
+        Mask Money Inputs
+        ***********************************/
+
+        $('.transactionAmount').maskMoney({ allowNegative: true });
+
+        $('.mainTransAmount').maskMoney({ allowNegative: true });
+
+        $('.transAmountToAdd').maskMoney({ allowNegative: true });
+
+
+
+        /********************************************
+        Delete Transaction button clicked
+        ******************************************/
+
+
+        $('.delete').click(function () {
+            var DivToDelete = $(this).parents('.transactionGroup');
+            DivToDelete.addClass('deleteTransGroup');
+            var ItemToDelete = $('.deleteTransGroup .mainTransId').val();
+            var ItemName = $('.deleteTransGroup .mainTransName').val();
+            var ItemType = $('.deleteTransGroup .mainTransType').val();
+            deleteTransaction(ItemToDelete, ItemName, DivToDelete, ItemType);
+        });
+
+
+        /*************************************************
+        Filter Section action functions
+        ********************************************/
+
+        $('.categoryFilterSelect').change(function () {
+            if ($('.categoryFilterSelect').val() == 1) {
+                $('.optionOneCriteria').show().prop("disabled", false);
+                $('.optionOtherCriteria').hide().prop("disabled", true);
+                $('.filterCategoryLabel').show();
+                $('.filterTextLabel').hide();
+            } else {
+                $('.optionOneCriteria').hide().prop("disabled", true);
+                $('.optionOtherCriteria').show().prop("disabled", false);
+                $('.filterCategoryLabel').hide();
+                $('.filterTextLabel').show();
+            }
+        });
+
+        $('.noBeginning').change(function () {
+            if ($(this).prop("checked") == true) {
+                $('.beginningFilterSelect').prop("disabled", true);
+            } else {
+                $('.beginningFilterSelect').prop("disabled", false);
+            }
+        });
+
+        $('.noEnding').change(function () {
+            if ($(this).prop("checked") == true) {
+                $('.endingFilterSelect').prop("disabled", true);
+            } else {
+                $('.endingFilterSelect').prop("disabled", false);
+            }
+        })
+
+        $('.noCriteria').change(function () {
+            if ($(this).prop("checked") == true) {
+                $('.categoryFilterSelect').prop("disabled", true);
+                $('.criteriaSelect').prop("disabled", true);
+            } else {
+                $('.categoryFilterSelect').prop("disabled", false);
+                $('.criteriaSelect').prop("disabled", false);
+            }
+        })
+
+
+        /***********************************************************
+        Split Transaction functions
+        *******************************************************/
+
+        //Split Transction clicked from main transaction page
+        $('.split').click(function () {
+            $('#fullSplitTransaction').show();
+            var transactionToSplit = $(this).parent().parent();
+            transactionToSplit.addClass("transactionToSplit");
+            var splitId = $('.transactionToSplit .mainTransId').val();
+            var splitDate = $('.transactionToSplit .mainTransDate').val();
+            var splitName = $('.transactionToSplit .mainTransName').val();
+            var splitAmount = $('.transactionToSplit .mainTransAmount').val();
+            var splitCategory = $('.transactionToSplit .mainTransItem').val();
+            var splitMemo = $('.transactionToSplit .mainTransMemo').val();
+            var existingSplits = $('.transId[value=' + splitId + ']');
+            if (existingSplits.length > 0) {
+                existingSplits.parent().addClass("visibleSplitsDiv");
+                $('.visibleSplitsDiv').show();
+                var total = 0.00;
+                $('.visibleSplitsDiv .transactionAmount').each(function (index) {
+                    var originalTransactionAmount = $(this).val();
+                    $(this).next().val(originalTransactionAmount);
+                    if (index == 0) {
+                        $(this).addClass("adjustSplitAmount");
+                        $(this).parent().parent().parent().addClass("fixedVisibleSplitDiv");
+                    } else {
+                        $(this).addClass("subsequentTransactionAmount")
+                    }
+                    total += parseFloat($(this).val());
+                });
+                $('#totalFromSplits').text(total.toFixed(2));
+            } else {
+                $('#totalFromSplits').text(splitAmount);
+                $('#split0 .transactionAmount').addClass("adjustSplitAmount");
+                $('#split0').addClass("fixedVisibleSplitDiv");
+            }
+            $('.adjustSplitAmount').prop("readonly", true);
+            $('.fixedVisibleSplitDiv .deleteSplitButton').hide();
+            for (var x = 0; x < 5; x++) {
+                $('#split' + x + ' .primaryTransactionId').val(splitId);
+                $('#split' + x + ' .transactionDate').val(splitDate);
+                $('#split' + x + ' .transactionName').val(splitName);
+                $('#split' + x + ' .transactionCategory').val(splitCategory);
+                $('#split' + x + ' .transactionMemo').val(splitMemo);
+                if (x == 0 && existingSplits.length == 0) {
+                    $('#split' + x + ' .transactionAmount').val(splitAmount);
+                } else {
+                    $('#split' + x + ' .transactionAmount').val(0.00);
+                    $('#split' + x + ' .transactionAmount').addClass("subsequentTransactionAmount");
+                    $('.subsequentTransactionAmount').keyup(updateSplitAmountOnKeyUp);
+                }
+                if (existingSplits.length == 0) {
+                    if (x == 0 || x == 1) {
+                        $('#split' + x).show();
+                    }
+                }
+            }
+        });
+
+        //Close split transaction pop-out
+
+        $('#closeSplit').click(function () {
+            $('#fullSplitTransaction').hide();
+            $('.visibleSplitsDiv .transactionAmount').each(function () {
+                $(this).val($(this).next().val());
+            });
+            $('.visibleSplitsDiv').hide().removeClass("visibleSplitsDiv");
+            $('.newSplitTransaction .primaryTransactionId').val("");
+            $('.newSplitTransaction .transactionDate').val("");
+            $('.newSplitTransaction .transactionName').val("");
+            $('.newSplitTransaction .transactionCategory').val("");
+            $('.newSplitTransaction .transactionMemo').val("");
+            $('.newSplitTransaction').hide();
+            $('.adjustSplitAmount').prop("readonly", false).removeClass("adjustSplitAmount");
+            $('.subsequentTransactionAmount').removeClass("subsequentTransactionAmount");
+            $('#totalFromSplits').val(0.00);
+            $('.transactionToSplit').removeClass("transactionToSplit");
+            $('.fixedVisibleSplitDiv').removeClass("fixedVisibleSplitDiv");
+        });
+
+        //Add new Split transaction
+
+        $('.addNewSplitButton').click(function () {
+            var transToShow = $('.newSplitTransaction:hidden').first();
+            transToShow.show();
+            if ($('.newSplitTransaction:hidden').length == 0) {
+                $('.addNewSplitButton').hide();
+            }
+        });
+
+        //Save Split Transactions
+
+        $('#saveSplit').click(function () {
+            var sendDataForUpdateAdd;
+            var UpdateSplit = [];
+            $('.visibleSplitsDiv').each(function () {
+                UpdateSplit.push(getUserTransactionObject($(this), "update"));
+            });
+
+            var AddSplit = [];
+            $('.newSplitTransaction').each(function () {
+                if ($(this).find('.transactionAmount').val() != 0) {
+                    AddSplit.push(getUserTransactionObject($(this), "add"));
+                }
+            });
+
+            sendDataForUpdateAdd = {
+                SplitTransactions: UpdateSplit,
+                SplitsToAdd: AddSplit
+            }
+
+            $.ajax({
+                url: '/Transaction/Transaction',
+                type: 'POST',
+                data: sendDataForUpdateAdd,
+                datatype: 'json',
+                success: function (data) {
+                    updateSplitTransctionsOnPage(data);
+                    $('.splitSuccess').text("Split Transactions successfully saved").show();
+                },
+                error: function (xhr) {
+                    $('.splitError').text(xhr);
+                }
+            });
+
+            function getUserTransactionObject(transactionDiv, updateOrAdd) {
+                transactionId = transactionDiv.find('.transactionId').val();
+                var primaryTransactionId;
+                if (updateOrAdd == "update") {
+                    primaryTransactionId = transactionDiv.find('.transId').val();
+                } else {
+                    primaryTransactionId = transactionDiv.find('.primaryTransactionId').val();
+                }
+                transactionDate = transactionDiv.find('.transactionDate').val();
+                transactionName = transactionDiv.find('.transactionName').val();
+                transactionAmount = transactionDiv.find('.transactionAmount').val();
+                transactionCategory = transactionDiv.find('.transactionCategory').val();
+                transactionMemo = transactionDiv.find('.transactionMemo').val();
+                transactionType = transactionDiv.find('.transactionType').val();
+
+                return {
+                    TransactionItemId: transactionId,
+                    PrimaryTransactionId: primaryTransactionId,
+                    TransactionDate: transactionDate,
+                    TransactionName: transactionName,
+                    TransactionAmount: transactionAmount,
+                    BudgetItemId: transactionCategory,
+                    TransactionMemo: transactionMemo,
+                    TransactionType: transactionType
+                }
+            }
+        });
+
+        //Delete Split Transaction for Existing Saved Split Transactions
+        $('.existingSplitTransaction .deleteSplitButton').click(deleteSplitButtonClickForExisting);
+
+        //Delete New Transaction that was added but not saved yet
+        $('.newSplitTransaction .deleteSplitButton').click(deleteSplitButtonClickForNew);
+
+        //Add DatePicker functionality
+        $('.datePicker').datepicker({
+            dateFormat: "d M yy",
+            showAnim: "slideDown"
+        });
+
+
+        /*********************************************************
+        General Functions
+        ********************************************************/
+
+        //Delete Transaction Ajax Query
+        function deleteTransaction(ItemToDelete, ItemName, DivToDelete, ItemType) {
+            var object = { TransactionId: ItemToDelete, TransactionName: ItemName, TransactionType: ItemType }
+            $.ajax({
+                url: '/Transaction/DeleteTransaction',
+                type: 'POST',
+                data: object,
+                datatype: 'json',
+                success: function (xhr) {
+                    $('.successMessage').show();
+                    $('.successMessage').addClass("alert alert-success alert-dismissable");
+                    $('.successMessage').text('You have successfully deleted Transaction - ' + ItemName);
+                    if (DivToDelete != null) {
+                        DivToDelete.hide();
+                    }
+
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    $('.errorMessage').hide();
+                    $('.errorMessage').addClass("alert alert-danger alert-dismissable");
+                    $('.errorMessage').text(textStatus + errorThrown);
+                }
+            });
+        }
+
+        function updateSplitTransctionsOnPage(newHtmlObject) {
+            var htmlParse = $.parseHTML(newHtmlObject);
+            var existingSplitTrans = $(htmlParse).find('.existingSplitTransaction');
+
+            //add any new existing Splits
+            $(existingSplitTrans).each(function () {
+                var transactionIdNode = $(this).find('.transactionId');
+                var transactionIdToCheck = transactionIdNode.val();
+                var transactionAmount = $(this).find('.transactionAmount').val();
+                var transactionExistsInDom = false;
+                $('.transactionId').each(function () {
+                    if ($(this).val() == transactionIdToCheck) {
+                        transactionExistsInDom = true;
+                        var parentNode = $(this).parents('.existingSplitTransaction');
+                        parentNode.find('.originalTransactionAmount').val(transactionAmount);
+                    }
+                });
+
+                if (!transactionExistsInDom) {
+                    $(this).addClass('visibleSplitsDiv');
+                    $(this).attr('style', 'display:block');
+                    $(this).find('.transactionAmount').maskMoney({ allowNegative: true }).addClass('subsequentTransactionAmount');
+                    $('.existingSplitTransactionDivs').append($(this));
+                }
+            });
+
+            
+            $('.existingSplitTransaction .deleteSplitButton').click(deleteSplitButtonClickForExisting);
+
+            //Switch out New Split Divs
+            $('.newSplitTransactionDivs').replaceWith($(newHtmlObject).find('.newSplitTransactionDivs'));
+            $('.newSplitTransactionDivs .primaryTransactionId').val($('.fixedVisibleSplitDiv .transId').val());
+            $('.newSplitTransactionDivs .transactionDate').val($('.fixedVisibleSplitDiv .transactionDate').val());
+            $('.newSplitTransactionDivs .transactionName').val($('.fixedVisibleSplitDiv .transactionName').val());
+            $('.newSplitTransactionDivs .transactionAmount').val(0.00).maskMoney({allowNegative: true}).addClass("subsequentTransactionAmount");
+            $('.newSplitTransactionDivs .transactionCategory').val('00000000-0000-0000-0000-000000000000');
+            $('.newSplitTransaction .deleteSplitButton').click(deleteSplitButtonClickForNew);
+
+            
+            //If new Split, need to add functionality to existing Splits
+            if ($('.fixedVisibleSplitDiv').length == 0) {
+                $('.visibleSplitsDiv').first().addClass('fixedVisibleSplitDiv')
+                $('.fixedVisibleSplitDiv').find('.deleteSplitButton').hide();
+                $('.fixedVisibleSplitDiv').find('.transactionAmount').addClass("adjustSplitAmount").prop("readonly", true).removeClass("subsequentTransactionAmount");
+            }
+
+            //add keyup function whenever subsequent amount is updated
+            $('.subsequentTransactionAmount').keyup(updateSplitAmountOnKeyUp);
+
+            //update Split Transactions on Main Page
+            var mainSplitsDiv = $(htmlParse).find('.splitsDivForTrans');
+            mainSplitsDiv.each(function () {
+                var replacementSplitsDiv = $(this);
+                var primaryTransToCheck = $(this).attr("id");
+                $('.mainTransId').each(function () {
+                    if ($(this).val() == primaryTransToCheck) {
+                        $(this).parents('.transactionGroup').find('.splitsDivForTrans').replaceWith(replacementSplitsDiv);
+                        //change Budget Item and Memo to Readonly
+                        $(this).parents('.transactionGroup').find('.mainTransItem').prop('disabled', true);
+                        $(this).parents('.transactionGroup').find('.mainTransMemo').prop('disabled', true);
+                    }
+                })
+            });
+        }
+
+        function updateSplitAmountOnKeyUp() {
+            var totalAmount = parseFloat($('#totalFromSplits').text());
+            var amountToSplit = 0.00;
+            $('.subsequentTransactionAmount').each(function () {
+                var firstAmount = $(this).val();
+                firstAmount = firstAmount.split(",").join(""); //Get rid of any commas before converting to decimal
+                amountToSplit += parseFloat(parseFloat(firstAmount).toFixed(2));
+            });
+            var newAdjustedAmount = totalAmount - amountToSplit;
+            $('.adjustSplitAmount').val(newAdjustedAmount.toFixed(2));
+        }
+
+        //Delete Button next to a new transaction that hasn't been saved yet is clicked.
+        function deleteSplitButtonClickForNew() {
+            if ($('.existingSplitTransaction:visible').length == 0 && $('.newSplitTransaction:visible').length == 2) {
+                $('#fullSplitTransaction').hide();
+                $('.newSplitTransaction .primaryTransactionId').val("");
+                $('.newSplitTransaction .transactionDate').val("");
+                $('.newSplitTransaction .transactionName').val("");
+                $('.newSplitTransaction .transactionCategory').val("");
+                $('.newSplitTransaction .transactionMemo').val("");
+                $('.newSplitTransaction').hide();
+                $('.transactionToSplit').removeClass("transactionToSplit");
+                $('.fixedVisibleSplitDiv').removeClass("fixedVisibleSplitDiv");
+                $('.adjustSplitAmount').prop("readonly", false).removeClass("adjustSplitAmount");
+                $('.subsequentTransactionAmount').removeClass("subsequentTransactionAmount");
+                $('#totalFromSplits').val(0.00);
+            } else {
+                $(this).parent().parent().addClass("newSplitTransactionToDelete");
+                var deleteValueToAdd = $('.newSplitTransactionToDelete .transactionAmount').val();
+                var fixedAmount = $('.adjustSplitAmount').val();
+                var newValueToFix = parseFloat(deleteValueToAdd) + parseFloat(fixedAmount);
+                $('.adjustSplitAmount').val(newValueToFix.toFixed(2));
+                $('.newSplitTransactionToDelete .transactionAmount').val(0.00);
+                $('.newSplitTransactionToDelete').hide().removeClass("newSplitTransactionToDelete");
+                $('.addNewSplitButton').show();
+            }
+        }
+
+        //Delete Button Next to an existing split transaction is clicked.
+        function deleteSplitButtonClickForExisting() {
+            $(this).parent().parent().addClass("splitToDelete");
+
+            if ($('.existingSplitTransaction:visible').length == 2) {
+                $('.existingSplitTransaction:visible .transactionId').each(function () {
+                    var transactionToDelete = $(this).val();
+                    deleteTransaction(transactionToDelete);
+                });
+                var primaryTransactionId = $('.splitToDelete .transId').val();
+                var object = { TransactionId: primaryTransactionId };
+                console.log(object);
+                $('.existingSplitTransaction:visible .transactionAmount').val(0.00);
+                $('.existingSplitTransaction:visible .transId').val("");
+                $('.existingSplitTransaction:visible').hide().removeClass("existingSplitTransaction");
+                $('#fullSplitTransaction').hide();
+                $('.visibleSplitsDiv').removeClass("visibleSplitsDiv");
+                $('.fixedVisibleSplitDiv').removeClass("fixedVisibleSplitDiv");
+                $('.splitToDelete').removeClass("splitToDelete");
+                $('.adjustSplitAmount').removeClass("adjustSplitAmount");
+                $('.subsequentTransactionAmount').removeClass("subsequentTransactionAmount");
+                $.ajax({
+                    url: '/Transaction/RemoveSplitTransaction',
+                    type: 'POST',
+                    data: object,
+                    datatype: 'json',
+                    success: function (xhr) {
+                        console.log(xhr);
+                        var mainTransactionToUndo = $('.mainTransId[value=' + primaryTransactionId + ']');
+                        mainTransactionToUndo.parent().parent().addClass("removeSplit");
+                        $('.removeSplit .mainTransItem').prop("disabled", false);
+                        $('.removeSplit .mainTransMemo').prop("disabled", false);
+                        $('.removeSplit .splitsOnMain').hide();
+                        $('.removeSplit').removeClass("removeSplit");
+                        $('.transactionToSplit').removeClass("transactionToSplit");
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr);
+                    }
+                });
+            } else {
+
+                var amountOfSplitToDelete = $('.splitToDelete .transactionAmount').val();
+                var amountOfAdjustField = $('.adjustSplitAmount').val();
+                var newAmount = parseFloat(amountOfSplitToDelete) + parseFloat(amountOfAdjustField);
+                $('.adjustSplitAmount').val(newAmount.toFixed(2));
+                $('.fixedVisibleSplitDiv .originalTransactionAmount').val(newAmount.toFixed(2));
+                $('.splitToDelete .transactionAmount').val("0.00");
+                var transactionIdToDelete = $('.splitToDelete .transactionId').val();
+                var transactionNameToDelete = $('.splitToDelete .transactionName').val();
+                var DivToDelete = $('.splitToDelete');
+                $('.splitToDelete .transId').val("");
+                deleteTransaction(transactionIdToDelete, transactionNameToDelete, DivToDelete);
+                var TransactionIdToUpdate = $('.fixedVisibleSplitDiv .transactionId').val();
+                var TransactionAmount = $('.fixedVisibleSplitDiv .transactionAmount').val();
+                var object = { TransactionId: TransactionIdToUpdate, TransactionAmount: TransactionAmount }
+                $('.splitToDelete').removeClass("splitToDelete");
+                $.ajax({
+                    url: '/Transaction/UpdateSplitTransactionAmount',
+                    type: 'POST',
+                    data: object,
+                    datatype: 'json',
+                    success: function (xhr) {
+                        console.log(xhr);
+                        $('#' + transactionIdToDelete).hide();
+                        $('#' + TransactionIdToUpdate + ' .splitTransactionAmount').text(TransactionAmount);
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        console.log(xhr);
+                    }
+                });
+            }
+        }
+
+        function updateSplitDivOnMainTransactionPage() {
+
+        }
+
+    </script>
+}
+
+

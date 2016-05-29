@@ -1,0 +1,24 @@
+﻿@using SpendingCoach.Models
+@model WizardViewModel
+
+<h2>The Most Important Budget Item is...</h2>
+
+<p>Now that you've provided some information about yourself and your household, it's time to dig in. Just one more 
+    quick question before going forward:</p>
+
+<p>What do you think the most important item in your Budget will be?</p>
+
+@for (var x = 0; x < Model.Helpers.MostImportantBudgetItems.Count; x++)
+{
+    <div class="radio">
+        <label>
+            @Html.RadioButtonFor(y => y.Answers.MostImportantItem, Model.Helpers.MostImportantBudgetItems[x].MostImportantItemId)
+            @Model.Helpers.MostImportantBudgetItems[x].MostImportantItemName
+        </label>
+    </div>
+}
+
+<div class="btn-group">
+    <button class="btn btn-primary btn-lg goToFirstPrev">Go Back</button>
+    <button class="btn btn-primary btn-lg goToFirstNext">Submit</button>
+</div>

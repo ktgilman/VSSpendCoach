@@ -1,0 +1,83 @@
+﻿@using SpendingCoach.Models
+@model WizardViewModel
+
+@{
+    int ExistingEmployer = -1;
+    for (var x = 0; x < Model.UserEmployers.ExistingEmployers.Count; x++)
+    {
+        if (Model.UserEmployers.ExistingEmployers[x].UserEmployerType == "Primary" && Model.UserEmployers.ExistingEmployers[x].UserEmployerUser == Model.PrimaryName)
+        {
+            ExistingEmployer = x;
+        }
+    }
+}
+
+<h2>Your Primary Employment</h2>
+
+<div class="subSection primaryEmploymentFirst">
+    <p>@(Model.PrimaryName), what is the name of your primary employer?</p>
+
+    <div class="form-group">
+        @if (ExistingEmployer == -1)
+        {
+            @Html.TextBoxFor(y => y.UserEmployers.NewEmployers[0].UserEmployerName, new { @class = "syncInput syncInputToInput form-control", @id = "primaryUserEmployer", data_item="Paycheck" })
+            @Html.HiddenFor(y => y.UserEmployers.NewEmployers[0].UserEmployerType, new { @Value = "Primary" })
+            @Html.HiddenFor(y => y.UserEmployers.NewEmployers[0].UserEmployerUser, new { @Value = Model.PrimaryName })
+        }
+        else
+        {
+            @Html.HiddenFor(y => y.UserEmployers.ExistingEmployers[ExistingEmployer].UserEmployerId)
+            @Html.HiddenFor(y => y.UserEmployers.ExistingEmployers[ExistingEmployer].UserEmployerType)
+            @Html.HiddenFor(y => y.UserEmployers.ExistingEmployers[ExistingEmployer].UserEmployerUser)
+            @Html.TextBoxFor(y => y.UserEmployers.ExistingEmployers[ExistingEmployer].UserEmployerName, new { @class = "syncInput syncInputToInput form-control", @id = "primaryUserEmployer", data_item = "Paycheck" })
+        }
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary btn-lg goToFirstPrev">Go Back</button>
+        <a href="Javascript:void(0)" class="btn btn-primary btn-lg subSectionNext">Next</a>
+    </div>
+</div>
+
+<div class="subSection primaryEmploymentSecond" style="display:none">
+    <p>What is your annual salary from 
+        <span class="primaryUserEmployer">
+            @if (ExistingEmployer != -1)
+            {
+                @Model.UserEmployers.ExistingEmployers[ExistingEmployer].UserEmployerName
+            }
+        </span>?
+    </p>
+
+    @{Boolean HasExistingBudgetItem = false;}
+    @for (var x = 0; x < Model.BudgetItems.ExistingBudgetItems.Count; x++ )
+    {
+        if(Model.BudgetItems.ExistingBudgetItems[x].BudgetListItemName == "Paycheck - " + Model.UserEmployers.ExistingEmployers[ExistingEmployer].UserEmployerName){
+            @Html.HiddenFor(y => y.BudgetItems.ExistingBudgetItems[x].BudgetListItemId)
+            @Html.HiddenFor(y => y.BudgetItems.ExistingBudgetItems[x].BudgetListItemCategory)
+            @Html.HiddenFor(y => y.BudgetItems.ExistingBudgetItems[x].BudgetListItemFrequency)
+            @Html.HiddenFor(y => y.BudgetItems.ExistingBudgetItems[x].BudgetListItemName, new { @class = "primaryUserEmployerInput" })
+            @Html.HiddenFor(y => y.BudgetItems.ExistingBudgetItems[x].BudgetListItemType)
+            @Html.TextBoxFor(y => y.BudgetItems.ExistingBudgetItems[x].BudgetListItemAmount)
+            HasExistingBudgetItem = true;
+        }
+    }
+
+    @if (!HasExistingBudgetItem)
+    {
+        for (var x = 0; x < Model.BudgetItems.NewBudgetItems.Count; x++)
+        {
+            if (Model.BudgetItems.NewBudgetItems[x].BudgetListItemName.StartsWith("Paycheck"))
+            {
+                @Html.HiddenFor(y => y.BudgetItems.NewBudgetItems[x].BudgetListItemName, new { @Value = "Paycheck - " + Model.UserEmployers.ExistingEmployers[ExistingEmployer].UserEmployerName, @class="primaryUserEmployerInput" })
+                @Html.HiddenFor(y => y.BudgetItems.NewBudgetItems[x].BudgetListItemCategory)
+                @Html.TextBoxFor(y => y.BudgetItems.NewBudgetItems[x].BudgetListItemAmount)
+            }
+        }
+    }
+
+    <div class="btn-group">
+        <a href="Javascript:void(0)" class="btn btn-primary btn-lg subSectionPrev">Go Back</a>
+
+    </div>
+    
+</div>

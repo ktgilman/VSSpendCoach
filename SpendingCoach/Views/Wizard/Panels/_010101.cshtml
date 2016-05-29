@@ -1,0 +1,34 @@
+﻿@using SpendingCoach.Models
+@model WizardViewModel
+
+<h2>Wizard Start</h2>
+
+<div class="subSection startFirst">
+    <p>
+        Congratulations! You have just taken the first step toward a more stable financial future. The Budget Wizard is a great way to
+        get started. This tool will guide you through your spending, offering suggestions and organizing your input into an easy to read and understand
+        ...wait for it...budget.
+    </p>
+
+    <p>
+        Before we begin, what is your name?
+    </p>
+    
+    <div class="form-group">
+        @Html.TextBoxFor(y => y.PrimaryName, new { @class = "form-control syncInput", @id = "syncPrimaryName" })
+    </div>
+    
+    <div class="btn-group">
+        <a href="Javascript:void(0)" class="btn btn-primary btn-lg subSectionNext">Submit</a>
+    </div>
+</div>
+
+<div class="subSection startSecond" style="display:none">
+    <p>Great! Are you ready to get started, <span class="syncPrimaryName">@Model.PrimaryName</span>?</p>
+
+    <div class="btn-group">
+        <a href="Javascript:void(0)" class="btn btn-primary btn-lg subSectionPrev">Go Back</a>
+        <button class="btn btn-primary btn-lg goToFirstNext">Yes</button>
+    </div>
+</div>
+

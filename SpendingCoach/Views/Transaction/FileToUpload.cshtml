@@ -1,0 +1,12 @@
+﻿@using SpendingCoach.Models
+@model TransactionViewModel
+
+@using (Html.BeginForm("Transaction", "Transaction", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.LabelFor(x => x.UploadedFile)
+    @Html.TextBoxFor(x => x.UploadedFile, new { type ="file"})
+    
+    <input type="submit" value="Upload" class="btn btn-default"/>
+}

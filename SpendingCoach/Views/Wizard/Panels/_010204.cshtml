@@ -1,0 +1,25 @@
+﻿@using SpendingCoach.Models
+@model WizardViewModel
+
+<h2>Your Purpose</h2>
+<p>Okay, so just to recap, here is your reason for following a budget:</p>
+<blockquote>
+    <p><strong>My Purpose for following a budget is:</strong></p>
+    <p>
+        @Model.Answers.SubsequentPurpose
+    </p>
+</blockquote>
+<p>Once again, ask yourself these questions:</p>
+<ul>
+    <li>Is your purpose positive or negative in nature?</li>
+    <li>If your purpose is negative, how could you turn it around to be positive?</li>
+    <li>If you can't think of a way to make your purpose positive, is there another reason that is positive for you to follow a budget?</li>
+</ul>
+<p>
+    If you are satisfied, click "Next" to move on, if not click "Go Back" to update your purpose. This is a very critical step, so
+    take all the time you need.
+</p>
+<div class="btn-group">
+    <button class="btn btn-primary btn-lg goToFirstPrev">Go Back</button>
+    <button class="btn btn-primary btn-lg goToFirstNext">Next</button>
+</div>

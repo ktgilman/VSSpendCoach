@@ -1,0 +1,19 @@
+﻿@using SpendingCoach.Models
+@model WizardViewModel
+
+<h2>Pop Quiz...</h2>
+<p>
+    Although nobody likes to start with a quiz, this one should be simple. In the space below, type in a short one sentence explanation of why you
+    want to create a budget (You can begin your answer like this: "I want to create a budget because..."). If this seems hokey, hang in there, there
+    is a good explanation coming. When you are finished, click "Next" to see where we're going with this one.
+</p>
+<div class="form-group">
+    @Html.LabelFor(y => y.Answers.InitialPurpose)
+    @Html.TextAreaFor(y => y.Answers.InitialPurpose, new { @class = "form-control initialPurpose", @rows = "5" })
+</div>
+<div class="form-group">
+    <div class="btn-group">
+        <button class="btn btn-primary btn-lg goToFirstPrev">Go Back</button>
+        <button class="btn btn-primary btn-lg goToFirstNext">Next</button>
+    </div>
+</div>

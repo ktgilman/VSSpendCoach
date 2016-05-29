@@ -1,0 +1,267 @@
+﻿@using SpendingCoach.Models
+@model BudgetViewModel
+@{
+    ViewBag.Title = "My Budget";
+    Layout = "~/Views/Shared/_centralstart.cshtml";
+}
+
+<h1 class="text-center">My Budget</h1>
+
+
+
+    @if (Model.ErrorMessage != null)
+    {
+        <p class="errorMessage">@Model.ErrorMessage</p>
+    }
+    @if (Model.SuccessMessage != null)
+    {
+        <p class="successMessage">@Model.SuccessMessage</p>
+    }
+    @if (Model.HasBudget)
+    {
+        <div class="col-md-6">
+            <div class="col-med-12">
+            @using (Html.BeginForm("Budget", "Central", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <h2 class="text-center" id="budgetOverview">Budget Overview</h2>
+                <p class="noBudgetItems" style="display:none">You have not set an Budget Items yet.  Use the Budget Wizard to set up your Budget!</p>
+                if (Model.BudgetList.Count() > 0)
+                {
+                    <div id="budgetMain">
+                    <a id="pickShow" href="JavaScript:void(0)">Show</a>
+                    <a id="pickEdit" href="JavaScript:void(0)">Edit</a>
+                    <a id="pickDelete" href="JavaScript:void(0)">Delete</a>
+                    <table class="table-striped">
+                        @foreach (var a in Model.Categories)
+                        {
+                            string OnCategory = a.Text.ToString();
+                            <thead id="div@(OnCategory)" class="categoryList">
+                                <tr>
+                                    <th colspan="4">@OnCategory</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (var x = 0; x < Model.BudgetList.Count(); x++)
+                                {
+                                    if (Model.BudgetList[x].BudgetListItemCategory == OnCategory)
+                                    {
+                                        <tr class="budgetItem">
+                                            @Html.HiddenFor(y => y.BudgetList[x].BudgetListItemId)
+                                            @Html.ValidationMessageFor(y => y.BudgetList[x].BudgetListItemId)
+                                            @Html.HiddenFor(y => y.BudgetList[x].BudgetListItemCategory)
+                                            @Html.ValidationMessageFor(y => y.BudgetList[x].BudgetListItemCategory)
+                                            <td class="deleteItems" style="display:none"><a class="delete" href="JavaScript:void(0)">Delete</a></td>
+                                            @if (Model.BudgetList[x].BudgetListItemType == 0)
+                                            {
+                                                <td>@Model.BudgetList[x].BudgetListItemName</td>
+                                                @Html.HiddenFor(y => y.BudgetList[x].BudgetListItemName)
+                                            }
+                                            else
+                                            {
+                                                <td class="showItems">@Model.BudgetList[x].BudgetListItemName</td>
+                                                <td class="editItems" style="display:none">@Html.TextBoxFor(y => y.BudgetList[x].BudgetListItemName)</td>
+                                            }
+
+
+                                            <td class="showItems">@Model.BudgetList[x].BudgetListItemAmount</td>
+                                            <td class="editItems" style="display:none">@Html.TextBoxFor(y => y.BudgetList[x].BudgetListItemAmount)</td>
+                                            <td class="showItems">@Model.BudgetList[x].BudgetListItemFrequency</td>
+                                            <td class="editItems" style="display:none">@Html.DropDownListFor(y => y.BudgetList[x].BudgetListItemFrequency, new SelectList(Model.SuggestedFrequencies, "Text", "Value", Model.BudgetList[x].BudgetListItemFrequency))</td>
+                                            <td>@Html.ValidationMessageFor(y => y.BudgetList[x].BudgetListItemName)</td>
+                                            <td>@Html.ValidationMessageFor(y => y.BudgetList[x].BudgetListItemAmount)</td>
+                                            <td>@Html.ValidationMessageFor(y => y.BudgetList[x].BudgetListItemFrequency)</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        }
+                    </table>
+                    </div>
+                    <div class="editItems form-group" style="display:none">
+                        <div class="col-md-12 text-center">
+                            <input type="submit" value="Edit Items" class="btn btn-default" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <p class="noBudgetItems">You have not set an Budget Items yet.  Use the Budget Wizard to set up your Budget!</p>
+                }
+            }
+            @using (Html.BeginForm("Budget", "Central", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                <p>Although we only recommend this for experts, you can also add Budget Items manually:</p>
+                <div class="form-group">
+                    <div class="col-md-4 text-center">
+                        @Html.ValidationMessageFor(x => x.NewBudgetItem.BudgetListItemCategory)<br />
+                        @Html.LabelFor(x => x.NewBudgetItem.BudgetListItemCategory)<br />
+                        @Html.DropDownListFor(x => x.NewBudgetItem.BudgetListItemCategory, Model.Categories, new { @class = "ListItemCategory" })
+                    </div>
+                    <div class="col-md-4 text-center">
+                        @Html.ValidationMessageFor(x => x.NewBudgetItem.BudgetListItemName)<br />
+                        @Html.LabelFor(x => x.NewBudgetItem.BudgetListItemName)<br />
+
+                        <label>
+                            <input type="radio" name="InputType" value="SuggestedInput" id="SuggestedInput"
+                                   @(Model.InputType == "SuggestedInput" || Model.InputType == null ? "checked" : "") />Use our Suggestions
+                        </label><br />
+
+                        @if (Model.InputType == "FreeformInput")
+                        {
+                            @Html.DropDownListFor(x => x.NewBudgetItem.BudgetListItemName, Model.SuggestedBudgetItems, new { @class = "ListItemNameOne", @disabled = true })<br />
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(x => x.NewBudgetItem.BudgetListItemName, Model.SuggestedBudgetItems, new { @class = "ListItemNameOne" })<br />
+                        }
+
+                        <label>
+                            <input type="radio" name="InputType" value="FreeformInput" id="FreeformInput"
+                                   @(Model.InputType == "FreeformInput" ? "checked" : "") />Create Your Own
+                        </label><br />
+                        @if (Model.InputType == "SuggestedInput" || Model.InputType == null)
+                        {
+                            @Html.TextBoxFor(x => x.NewBudgetItem.BudgetListItemName, new { @class = "ListItemNameTwo", @placeholder = "Customer Budget Item", @disabled = true })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(x => x.NewBudgetItem.BudgetListItemName, new { @class = "ListItemNameTwo", @placeholder = "Custom Budget Item" })
+                        }
+
+                    </div>
+                    <div class="col-md-4 text-center">
+                        @Html.ValidationMessageFor(x => x.NewBudgetItem.BudgetListItemFrequency)<br />
+                        @Html.LabelFor(x => x.NewBudgetItem.BudgetListItemFrequency)<br />
+                        @Html.DropDownListFor(x => x.NewBudgetItem.BudgetListItemFrequency, Model.SuggestedFrequencies)<br />
+                    </div>
+                    <div class="col-md-4 text-center">
+                        @Html.ValidationMessageFor(x => x.NewBudgetItem.BudgetListItemAmount)<br />
+                        @Html.LabelFor(x => x.NewBudgetItem.BudgetListItemAmount)<br />
+                        @Html.TextBoxFor(x => x.NewBudgetItem.BudgetListItemAmount, new { @placeholder = "0.00" })<br />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12 text-center">
+                        <input type="submit" value="Add New Budget Item" class="btn btn-default" />
+                    </div>
+                </div>
+            }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="col-med-12">
+                <h2 class="text-center">Budget Wizard</h2>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12 text-center">
+                    <input type="submit" value="Start Budget Wizard" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("Budget", "Central", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <div>
+                <p>You have not created a budget yet, would you like to?</p>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create Budget" class="btn btn-default" />
+                </div>
+            </div>
+        }
+
+    }
+
+@section Scripts
+    {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var selected = $('.ListItemCategory').val();
+            var options = $('.ListItemNameOne optgroup');
+            options.each(function () {
+                if ($(this).attr('Label') != selected) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                    $('.ListItemNameOne').val($(this).children().first().val());
+                }
+            });
+            if ($('.ListItemNameTwo').prop('disabled') == true) {
+                $('.ListItemNameTwo').val('');
+            }
+            $('.categoryList').each(function () {
+                if ($(this).next().children().length < 1) {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $('#pickShow').click(function () {
+            $('.showItems').show();
+            $('.editItems').hide();
+            $('.deleteItems').hide();
+        });
+
+        $('#pickEdit').click(function () {
+            $('.showItems').hide();
+            $('.editItems').show();
+            $('.deleteItems').hide();
+        });
+
+        $('#pickDelete').click(function () {
+            $('.showItems').show();
+            $('.editItems').hide();
+            $('.deleteItems').show();
+        });
+
+        $('.delete').click(function () {
+            var itemToDelete = $(this).parent().next().text();
+            var divToHide = $(this).parent().parent();
+            var catToCheck = divToHide.parent().prev().attr('id');
+            var object = { DeleteName: itemToDelete };
+            $.ajax({
+                url: '/Central/Delete',
+                type: 'POST',
+                data: object,
+                datatype: 'json',
+                success: function (xhr) {
+                    $('.successMessage').text('Successfully Deleted Item - ' + itemToDelete);
+                    divToHide.hide();
+                    var catIsEmpty = true;
+                    $('#' + catToCheck).next().children().each(function () {
+                        var check = $(this).css('display');
+                        if (check != 'none') {
+                            catIsEmpty = false;
+                        }
+                    });
+                    if (catIsEmpty) {
+                        $('#' + catToCheck).hide();
+                    }
+                    var allCatAreEmpty = true;
+                    $('.categoryList').each(function () {
+                        var check = $(this).css('display');
+                        var check2 = $.trim($(this).text());
+                        if (check != 'none' && check2 != 0) {
+                            allCatAreEmpty = false;
+                        }
+                    });
+                    if (allCatAreEmpty) {
+                        $('.noBudgetItems').show();
+                        $('#budgetMain').hide();
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+        });
+
+    </script>
+
+}
